@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import { FiArrowUp, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 
 const footerLinks = [
-  { title: 'Quick Links', items: ['Home', 'Dashboard', 'Resume Analyzer', 'Interview Prep'] },
-  { title: 'Resources', items: ['Career Tips', 'AI Playbooks', 'Success Stories'] },
+  { title: 'Quick Links', items: [{ label: 'Home', to: '/' }, { label: 'Dashboard', to: '/dashboard' }, { label: 'Resume Analyzer', to: '/resume' }, { label: 'Interview Prep', to: '/interview' }, { label: 'Job Tracker', to: '/jobtracker' }] },
+  { title: 'Resources', items: [{ label: 'Features', to: '/', hash: '#features' }, { label: 'How it Works', to: '/', hash: '#how-it-works' }, { label: 'Success Stories', to: '/', hash: '#stories' }] },
 ]
 
 const FooterSection = () => {
@@ -33,9 +33,9 @@ const FooterSection = () => {
                 <h3 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-200">{group.title}</h3>
                 <ul className="mt-4 space-y-3 text-sm text-slate-400">
                   {group.items.map((item) => (
-                    <li key={item}>
-                      <Link to="/" className="transition hover:text-white">
-                        {item}
+                    <li key={item.label}>
+                      <Link to={{ pathname: item.to, hash: item.hash }} className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70">
+                        {item.label}
                       </Link>
                     </li>
                   ))}
@@ -48,7 +48,9 @@ const FooterSection = () => {
               <ul className="mt-4 space-y-3 text-sm text-slate-400">
                 <li className="flex items-center gap-2">
                   <FiMail className="h-4 w-4 text-indigo-300" />
-                  hello@careerforge.ai
+                  <a href="mailto:tehreemali491@gmail.com" className="transition hover:text-white">
+                    tehreemali491@gmail.com
+                  </a>
                 </li>
                 <li className="flex items-center gap-2">
                   <FiLinkedin className="h-4 w-4 text-indigo-300" />
@@ -66,19 +68,19 @@ const FooterSection = () => {
         <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500">© 2026 CareerForge AI. All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-3">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
+            <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
               <FiGithub className="h-4 w-4" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
               <FiLinkedin className="h-4 w-4" />
             </a>
-            <a href="mailto:hello@careerforge.ai" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
+            <a href="mailto:tehreemali491@gmail.com" aria-label="Email" className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white">
               <FiMail className="h-4 w-4" />
             </a>
             <button
               type="button"
               onClick={scrollToTop}
-              className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-3 py-2 text-sm font-medium text-indigo-200 transition hover:bg-indigo-500/20"
+              className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-3 py-2 text-sm font-medium text-indigo-200 transition hover:bg-indigo-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
             >
               <FiArrowUp className="h-4 w-4" />
               Back to Top

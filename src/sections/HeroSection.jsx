@@ -68,8 +68,16 @@ const HeroSection = () => {
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-400 sm:text-xl">
-            CareerForge AI helps founders, operators, and ambitious professionals turn their goals into a confident roadmap with smart coaching, personalized strategy, and instant momentum.
+            CareerForge AI helps ambitious professionals turn their next move into a confident plan by helping them analyze resumes, prepare interviews, track job applications, and improve ATS score with clarity.
           </p>
+
+          <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-300">
+            {['Resume analysis', 'Interview prep', 'Job tracking', 'ATS optimization'].map((item) => (
+              <span key={item} className="rounded-full border border-white/10 bg-white/5 px-3 py-2">
+                {item}
+              </span>
+            ))}
+          </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

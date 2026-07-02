@@ -83,6 +83,18 @@ const DashboardPage = () => {
         </header>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-indigo-600/20 via-slate-900 to-emerald-500/10 p-5 shadow-[0_16px_60px_rgba(2,6,23,0.28)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-400">AI Career Score</p>
+                <p className="mt-2 text-3xl font-semibold text-white">91/100</p>
+              </div>
+              <div className="rounded-2xl bg-indigo-500/10 p-2 text-indigo-200">
+                <FiCpu className="h-5 w-5" />
+              </div>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-slate-400">Your profile is highly aligned for modern product and design roles.</p>
+          </div>
           {stats.map((stat) => {
             const Icon = stat.icon
             return (

@@ -38,7 +38,7 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="benefits" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <section id="features" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
       <SectionHeading
         eyebrow="Premium features"
         title="Everything you need to move forward with conviction"

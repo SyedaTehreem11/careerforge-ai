@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { FiBarChart2, FiBriefcase, FiFileText, FiHome, FiLayers, FiMessageSquare, FiMonitor } from 'react-icons/fi'
 import Navbar from './components/Navbar'
 import DashboardPage from './pages/dashboard'
@@ -36,6 +37,23 @@ function AnimatedSection({ children, className = '' }) {
 }
 
 function HomePage() {
+  const location = useLocation()
+
+  useEffect(() => {
+    const hash = location.hash.replace('#', '')
+    if (hash) {
+      const target = document.getElementById(hash)
+      if (target) {
+        window.setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 120)
+      }
+      return
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [location.hash, location.pathname])
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">

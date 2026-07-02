@@ -125,12 +125,14 @@ const ResumeAnalyzerPage = () => {
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isAnalyzed, setIsAnalyzed] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [analysis, setAnalysis] = useState(null)
 
   const handleFileSelection = (file) => {
     if (file && file.type === 'application/pdf') {
       setSelectedFile(file)
       setIsAnalyzed(false)
+      setIsLoading(false)
       setAnalysis(null)
     }
   }
@@ -150,28 +152,35 @@ const ResumeAnalyzerPage = () => {
   const handleAnalyze = () => {
     if (!selectedFile) return
 
-    setAnalysis({
-      resumeScore: 86,
-      atsScore: 92,
-      keywordMatch: 89,
-      missingSkills: ['Motion Design', 'Go-to-Market Analytics', 'B2B SaaS Metrics'],
-      strengths: [
-        'Strong ownership and cross-functional collaboration',
-        'Clear impact storytelling with measurable outcomes',
-        'Solid leadership presence in recent roles',
-      ],
-      weaknesses: [
-        'Leadership examples need more quantification',
-        'Some ATS keywords for product analytics are missing',
-        'The opening summary could be more tailored to the role',
-      ],
-      suggestions: [
-        'Add a concise metrics section to highlight results more clearly.',
-        'Mention your AI workflow experience in the summary for better ATS match.',
-        'Tighten the top section so the strongest signal appears earlier.',
-      ],
-    })
-    setIsAnalyzed(true)
+    setIsLoading(true)
+    setIsAnalyzed(false)
+    setAnalysis(null)
+
+    window.setTimeout(() => {
+      setAnalysis({
+        resumeScore: 86,
+        atsScore: 92,
+        keywordMatch: 89,
+        missingSkills: ['Motion Design', 'Go-to-Market Analytics', 'B2B SaaS Metrics'],
+        strengths: [
+          'Strong ownership and cross-functional collaboration',
+          'Clear impact storytelling with measurable outcomes',
+          'Solid leadership presence in recent roles',
+        ],
+        weaknesses: [
+          'Leadership examples need more quantification',
+          'Some ATS keywords for product analytics are missing',
+          'The opening summary could be more tailored to the role',
+        ],
+        suggestions: [
+          'Add a concise metrics section to highlight results more clearly.',
+          'Mention your AI workflow experience in the summary for better ATS match.',
+          'Tighten the top section so the strongest signal appears earlier.',
+        ],
+      })
+      setIsLoading(false)
+      setIsAnalyzed(true)
+    }, 1200)
   }
 
   return (
@@ -257,13 +266,27 @@ const ResumeAnalyzerPage = () => {
               <button
                 type="button"
                 onClick={handleAnalyze}
-                disabled={!selectedFile}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-3.5 font-semibold text-white shadow-[0_14px_50px_rgba(99,102,241,0.28)] transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={!selectedFile || isLoading}
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-3.5 font-semibold text-white shadow-[0_14px_50px_rgba(99,102,241,0.28)] transition hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Analyze Resume
-                <FiArrowRight className="h-4 w-4" />
+                {isLoading ? 'Analyzing Resume…' : 'Analyze Resume'}
+                {isLoading ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : <FiArrowRight className="h-4 w-4" />}
               </button>
             </div>
+
+            {isLoading && (
+              <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl sm:p-8">
+                <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-indigo-400/30 bg-indigo-500/10 text-indigo-200">
+                    <div className="h-7 w-7 animate-spin rounded-full border-2 border-indigo-300/40 border-t-indigo-200" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Scanning your resume</h3>
+                    <p className="mt-2 text-sm text-slate-400">We’re mapping ATS signals, keyword fit, and strengths in real time.</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {isAnalyzed && analysis && (
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl sm:p-8">

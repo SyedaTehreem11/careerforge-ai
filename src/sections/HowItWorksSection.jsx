@@ -22,7 +22,7 @@ const steps = [
 
 const HowItWorksSection = () => {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
       <SectionHeading
         eyebrow="How it works"
         title="A clean path from ambition to action"

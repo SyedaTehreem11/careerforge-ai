@@ -45,7 +45,7 @@ const Navbar = ({ variant = 'landing' }) => {
         <div className="flex items-center gap-3">
           <Link
             to={isDashboard ? '/' : '/dashboard'}
-            className="hidden items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-500/20 sm:inline-flex"
+            className="hidden items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-4 py-2 text-sm font-medium text-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70 sm:inline-flex"
           >
             {isDashboard ? 'Back home' : 'Open dashboard'}
             <FiArrowRight className="h-4 w-4" />
@@ -54,7 +54,7 @@ const Navbar = ({ variant = 'landing' }) => {
           <button
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition duration-300 hover:bg-white/10 md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition duration-300 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70 md:hidden"
             aria-label="Toggle navigation"
           >
             {isMenuOpen ? <FiX className="h-5 w-5" /> : <FiMenu className="h-5 w-5" />}
