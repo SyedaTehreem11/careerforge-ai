@@ -13,6 +13,7 @@ import {
   FiTarget,
   FiTrendingUp,
   FiUploadCloud,
+  FiZap,
 } from 'react-icons/fi'
 
 const stats = [
@@ -44,6 +45,24 @@ const quickActions = [
 ]
 
 const DashboardPage = () => {
+  const weeklyProgress = [72, 81, 76, 88, 91, 85, 94]
+  const skillProgress = [
+    { label: 'Resume clarity', value: 88 },
+    { label: 'AI interview prep', value: 91 },
+    { label: 'Job fit targeting', value: 82 },
+    { label: 'Portfolio storytelling', value: 76 },
+  ]
+  const activityTimeline = [
+    { title: 'Resume optimized', time: '2h ago', detail: 'Updated summary and skills section' },
+    { title: 'Interview practice completed', time: 'Yesterday', detail: 'Completed 3 AI mock interview rounds' },
+    { title: 'New application submitted', time: '2 days ago', detail: 'Applied to BrightPath Design Systems' },
+  ]
+  const upcomingTasks = [
+    { title: 'Follow up with Northstar Labs', time: 'Today · 4:00 PM' },
+    { title: 'Refine portfolio case study', time: 'Tomorrow · 11:30 AM' },
+    { title: 'Prepare salary negotiation notes', time: 'Friday · 6:00 PM' },
+  ]
+
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -161,6 +180,126 @@ const DashboardPage = () => {
                   <span>Senior Product Designer</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-white">Weekly Progress</h2>
+                <p className="mt-1 text-sm text-slate-400">Momentum is climbing across your growth plan.</p>
+              </div>
+              <div className="rounded-full bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-300">+12% this week</div>
+            </div>
+
+            <div className="mt-6 flex h-44 items-end gap-3 rounded-[1.5rem] border border-white/10 bg-slate-950/60 p-4">
+              {weeklyProgress.map((value, index) => (
+                <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center gap-2">
+                  <div className="flex h-32 w-full items-end justify-center rounded-2xl bg-gradient-to-t from-indigo-500/70 to-emerald-400/40 p-1">
+                    <div className="w-full rounded-xl bg-gradient-to-t from-cyan-400 to-indigo-400" style={{ height: `${value}%` }} />
+                  </div>
+                  <span className="text-xs text-slate-500">D{index + 1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-indigo-600/20 via-slate-900 to-emerald-500/10 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center gap-2 text-indigo-200">
+              <FiCpu className="h-5 w-5" />
+              <h2 className="text-xl font-semibold text-white">AI Career Insights</h2>
+            </div>
+            <div className="mt-5 rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
+              <p className="text-sm text-slate-400">Best next move</p>
+              <p className="mt-2 text-lg font-semibold text-white">Double down on storytelling and measurable outcomes.</p>
+              <p className="mt-3 text-sm leading-7 text-slate-400">Your profile is strongest in leadership and cross-functional collaboration. Sharpen the proof points and you’ll stand out even more.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-white">Skills Progress</h2>
+                <p className="mt-1 text-sm text-slate-400">Your growth is consistent and focused.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {skillProgress.map((skill) => (
+                <div key={skill.label}>
+                  <div className="mb-2 flex items-center justify-between text-sm">
+                    <span className="text-slate-300">{skill.label}</span>
+                    <span className="text-slate-400">{skill.value}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-800">
+                    <div className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-emerald-400" style={{ width: `${skill.value}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center gap-2 text-amber-200">
+              <FiZap className="h-5 w-5" />
+              <h2 className="text-xl font-semibold text-white">Motivational Quote</h2>
+            </div>
+            <div className="mt-5 rounded-[1.25rem] border border-white/10 bg-gradient-to-br from-amber-500/10 via-slate-950/60 to-emerald-500/10 p-5">
+              <p className="text-lg leading-8 text-slate-200">“Momentum compounds when you show up with intention.”</p>
+              <p className="mt-4 text-sm text-slate-400">Keep building, one strong action at a time.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-white">Recent Activity</h2>
+                <p className="mt-1 text-sm text-slate-400">Your latest momentum and wins.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {activityTimeline.map((item) => (
+                <div key={item.title} className="flex gap-3 rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
+                  <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-400" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-white">{item.title}</p>
+                      <span className="text-xs text-slate-500">{item.time}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-400">{item.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-white">Upcoming Tasks</h2>
+                <p className="mt-1 text-sm text-slate-400">Stay ahead of the next milestone.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {upcomingTasks.map((task) => (
+                <div key={task.title} className="flex items-center justify-between rounded-[1.25rem] border border-white/10 bg-slate-950/60 px-4 py-3">
+                  <div>
+                    <p className="font-medium text-white">{task.title}</p>
+                    <p className="mt-1 text-sm text-slate-400">{task.time}</p>
+                  </div>
+                  <div className="rounded-full bg-indigo-500/10 p-2 text-indigo-200">
+                    <FiCalendar className="h-4 w-4" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>

@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react'
-import { FiBriefcase, FiFilter, FiPlus, FiSearch, FiTarget, FiTrendingUp } from 'react-icons/fi'
+import { FiBriefcase, FiCalendar, FiDollarSign, FiFilter, FiMapPin, FiPlus, FiSearch, FiTarget, FiTrendingUp } from 'react-icons/fi'
 
 const applicationsData = [
-  { company: 'Northstar Labs', position: 'Senior Product Designer', location: 'Remote · US', appliedDate: 'Jun 28', status: 'Interview', nextInterview: 'Jul 03 · 10:30 AM' },
-  { company: 'Flux AI', position: 'UX Engineer', location: 'New York, NY', appliedDate: 'Jun 24', status: 'Applied', nextInterview: 'Pending' },
-  { company: 'BrightPath', position: 'Design Systems Lead', location: 'Austin, TX', appliedDate: 'Jun 20', status: 'Offer', nextInterview: 'Jul 06 · 2:00 PM' },
-  { company: 'Lumen Cloud', position: 'Product Designer', location: 'Remote · EU', appliedDate: 'Jun 18', status: 'Pending', nextInterview: 'Jul 08 · 4:00 PM' },
-  { company: 'Mosaic AI', position: 'Visual Designer', location: 'Chicago, IL', appliedDate: 'Jun 15', status: 'Rejected', nextInterview: '—' },
-  { company: 'Aurelia', position: 'Senior UI Designer', location: 'Remote · Canada', appliedDate: 'Jun 12', status: 'Interview', nextInterview: 'Jul 01 · 1:00 PM' },
-  { company: 'Helio', position: 'Product Design Manager', location: 'San Francisco, CA', appliedDate: 'Jun 10', status: 'Applied', nextInterview: 'Pending' },
-  { company: 'Nova Studio', position: 'Brand Designer', location: 'Seattle, WA', appliedDate: 'Jun 08', status: 'Pending', nextInterview: 'Jul 10 · 11:00 AM' },
+  { company: 'Northstar Labs', position: 'Senior Product Designer', location: 'Remote · US', salary: '$165k', appliedDate: '2026-06-28', status: 'Interview', nextAction: 'Prep portfolio story for Jul 03 call' },
+  { company: 'Flux AI', position: 'UX Engineer', location: 'New York, NY', salary: '$150k', appliedDate: '2026-06-24', status: 'Applied', nextAction: 'Follow up this week' },
+  { company: 'BrightPath', position: 'Design Systems Lead', location: 'Austin, TX', salary: '$180k', appliedDate: '2026-06-20', status: 'Offer', nextAction: 'Review offer terms' },
+  { company: 'Lumen Cloud', position: 'Product Designer', location: 'Remote · EU', salary: '$140k', appliedDate: '2026-06-18', status: 'Applied', nextAction: 'Send case study recap' },
+  { company: 'Mosaic AI', position: 'Visual Designer', location: 'Chicago, IL', salary: '$130k', appliedDate: '2026-06-15', status: 'Rejected', nextAction: 'Archive and revisit in 90 days' },
+  { company: 'Aurelia', position: 'Senior UI Designer', location: 'Remote · Canada', salary: '$155k', appliedDate: '2026-06-12', status: 'Interview', nextAction: 'Prepare system design walkthrough' },
+  { company: 'Helio', position: 'Product Design Manager', location: 'San Francisco, CA', salary: '$190k', appliedDate: '2026-06-10', status: 'Applied', nextAction: 'Schedule recruiter conversation' },
+  { company: 'Nova Studio', position: 'Brand Designer', location: 'Seattle, WA', salary: '$125k', appliedDate: '2026-06-08', status: 'Rejected', nextAction: 'Refresh portfolio case studies' },
 ]
 
 const statusStyles = {
@@ -30,16 +30,32 @@ const progressCards = [
 const JobTrackerPage = () => {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All')
+  const [sortBy, setSortBy] = useState('date')
+  const [applications, setApplications] = useState(applicationsData)
 
   const filteredApplications = useMemo(() => {
-    return applicationsData.filter((item) => {
+    const result = applications.filter((item) => {
       const matchesQuery = [item.company, item.position, item.location].some((value) =>
         value.toLowerCase().includes(query.toLowerCase()),
       )
       const matchesFilter = filter === 'All' || item.status === filter
       return matchesQuery && matchesFilter
     })
-  }, [filter, query])
+
+    return result.sort((a, b) => {
+      if (sortBy === 'status') {
+        return a.status.localeCompare(b.status)
+      }
+
+      return new Date(b.appliedDate) - new Date(a.appliedDate)
+    })
+  }, [applications, filter, query, sortBy])
+
+  const handleStatusChange = (company, newStatus) => {
+    setApplications((current) =>
+      current.map((item) => (item.company === company ? { ...item, status: newStatus } : item)),
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8 text-white sm:px-6 lg:px-8">
@@ -68,7 +84,7 @@ const JobTrackerPage = () => {
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search companies or roles"
+                  placeholder="Search company"
                   className="w-full bg-transparent outline-none placeholder:text-slate-500"
                 />
               </label>
@@ -83,51 +99,84 @@ const JobTrackerPage = () => {
                   <option value="All" className="bg-slate-900">All</option>
                   <option value="Applied" className="bg-slate-900">Applied</option>
                   <option value="Interview" className="bg-slate-900">Interview</option>
-                  <option value="Rejected" className="bg-slate-900">Rejected</option>
                   <option value="Offer" className="bg-slate-900">Offer</option>
-                  <option value="Pending" className="bg-slate-900">Pending</option>
+                  <option value="Rejected" className="bg-slate-900">Rejected</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
+                <FiCalendar className="h-4 w-4 text-slate-400" />
+                <select
+                  value={sortBy}
+                  onChange={(event) => setSortBy(event.target.value)}
+                  className="bg-transparent outline-none"
+                >
+                  <option value="date" className="bg-slate-900">Sort by date</option>
+                  <option value="status" className="bg-slate-900">Sort by status</option>
                 </select>
               </label>
             </div>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-white/10">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-white/10 text-left text-sm">
-                <thead className="bg-slate-950/70 text-slate-400">
-                  <tr>
-                    <th className="px-4 py-3 font-medium">Company</th>
-                    <th className="px-4 py-3 font-medium">Position</th>
-                    <th className="px-4 py-3 font-medium">Location</th>
-                    <th className="px-4 py-3 font-medium">Applied Date</th>
-                    <th className="px-4 py-3 font-medium">Status</th>
-                    <th className="px-4 py-3 font-medium">Next Interview</th>
-                    <th className="px-4 py-3 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10 bg-slate-900/60">
-                  {filteredApplications.map((item) => (
-                    <tr key={`${item.company}-${item.position}`} className="transition hover:bg-white/5">
-                      <td className="px-4 py-3 font-medium text-white">{item.company}</td>
-                      <td className="px-4 py-3 text-slate-300">{item.position}</td>
-                      <td className="px-4 py-3 text-slate-400">{item.location}</td>
-                      <td className="px-4 py-3 text-slate-400">{item.appliedDate}</td>
-                      <td className="px-4 py-3">
-                        <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusStyles[item.status]}`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-400">{item.nextInterview}</td>
-                      <td className="px-4 py-3">
-                        <button className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10">
-                          <FiTarget className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="mt-6 grid gap-4 xl:grid-cols-2">
+            {filteredApplications.map((item) => (
+              <article key={`${item.company}-${item.position}`} className="rounded-[1.5rem] border border-white/10 bg-slate-950/60 p-5 shadow-[0_16px_60px_rgba(2,6,23,0.24)]">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-200">{item.company}</p>
+                    <h3 className="mt-2 text-xl font-semibold text-white">{item.position}</h3>
+                  </div>
+                  <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusStyles[item.status]}`}>
+                    {item.status}
+                  </span>
+                </div>
+
+                <div className="mt-5 grid gap-3 text-sm text-slate-400 sm:grid-cols-2">
+                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                    <FiMapPin className="h-4 w-4 text-slate-300" />
+                    <span>{item.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                    <FiDollarSign className="h-4 w-4 text-slate-300" />
+                    <span>{item.salary}</span>
+                  </div>
+                </div>
+
+                <div className="mt-5 rounded-[1.25rem] border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-slate-400">Applied Date</span>
+                    <span className="font-medium text-white">{item.appliedDate}</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <span className="text-slate-400">Next Action</span>
+                    <span className="max-w-[60%] text-right font-medium text-white">{item.nextAction}</span>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <label className="flex flex-1 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
+                    <span className="text-slate-400">Status</span>
+                    <select
+                      value={item.status}
+                      onChange={(event) => handleStatusChange(item.company, event.target.value)}
+                      className="w-full bg-transparent outline-none"
+                    >
+                      <option value="Applied" className="bg-slate-900">Applied</option>
+                      <option value="Interview" className="bg-slate-900">Interview</option>
+                      <option value="Offer" className="bg-slate-900">Offer</option>
+                      <option value="Rejected" className="bg-slate-900">Rejected</option>
+                    </select>
+                  </label>
+
+                  <button className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-white/20">
+                    <FiTarget className="h-4 w-4" />
+                    Open Details
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 

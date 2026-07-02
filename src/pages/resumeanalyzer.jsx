@@ -1,26 +1,17 @@
 import { useRef, useState } from 'react'
 import {
+  FiAlertTriangle,
   FiArrowRight,
+  FiBarChart2,
   FiCheckCircle,
   FiCpu,
   FiFileText,
   FiShield,
-  FiZap,
+  FiTarget,
+  FiTrendingUp,
   FiUploadCloud,
+  FiZap,
 } from 'react-icons/fi'
-
-const skillsFound = ['Product Strategy', 'Design Systems', 'AI Collaboration', 'Leadership']
-const missingSkills = ['Motion Design', 'Go-to-Market Analytics', 'B2B SaaS Metrics']
-const strengths = [
-  'Strong ownership and cross-functional collaboration',
-  'Clear impact storytelling with measurable outcomes',
-  'Solid leadership presence in recent roles',
-]
-const suggestions = [
-  'Add a concise metrics section to highlight results more clearly.',
-  'Mention your AI workflow experience in the summary for better ATS match.',
-  'Tighten the top section so the strongest signal appears earlier.',
-]
 
 const formatFileSize = (bytes) => {
   if (!bytes) return '0 KB'
@@ -36,16 +27,111 @@ const formatFileSize = (bytes) => {
   return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`
 }
 
+const getScoreTone = (score) => {
+  if (score >= 85) {
+    return {
+      label: 'Strong signal',
+      text: 'text-emerald-300',
+      border: 'border-emerald-400/20',
+      bg: 'bg-emerald-500/10',
+      dot: 'bg-emerald-400',
+      gradient: 'from-emerald-500 to-cyan-400',
+    }
+  }
+
+  if (score >= 70) {
+    return {
+      label: 'Needs polish',
+      text: 'text-amber-300',
+      border: 'border-amber-400/20',
+      bg: 'bg-amber-500/10',
+      dot: 'bg-amber-400',
+      gradient: 'from-amber-500 to-orange-400',
+    }
+  }
+
+  return {
+    label: 'Needs work',
+    text: 'text-rose-300',
+    border: 'border-rose-400/20',
+    bg: 'bg-rose-500/10',
+    dot: 'bg-rose-400',
+    gradient: 'from-rose-500 to-pink-400',
+  }
+}
+
+const ScoreRing = ({ score, label, detail }) => {
+  const radius = 46
+  const circumference = 2 * Math.PI * radius
+  const tone = getScoreTone(score)
+  const offset = circumference - (score / 100) * circumference
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative flex h-32 w-32 items-center justify-center">
+        <svg viewBox="0 0 120 120" className="h-32 w-32 -rotate-90">
+          <circle cx="60" cy="60" r={radius} stroke="rgba(255,255,255,0.08)" strokeWidth="10" fill="none" />
+          <circle
+            cx="60"
+            cy="60"
+            r={radius}
+            stroke="url(#scoreGradient)"
+            strokeWidth="10"
+            strokeLinecap="round"
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+          />
+          <defs>
+            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#34d399" />
+              <stop offset="100%" stopColor="#22d3ee" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div className="absolute text-center">
+          <p className="text-3xl font-semibold text-white">{score}</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-slate-400">/100</p>
+        </div>
+      </div>
+      <p className="mt-4 text-lg font-semibold text-white">{label}</p>
+      <p className="mt-1 text-sm text-slate-400">{detail}</p>
+      <div className={`mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium ${tone.text} ${tone.border} ${tone.bg}`}>
+        <span className={`h-2.5 w-2.5 rounded-full ${tone.dot}`} />
+        {tone.label}
+      </div>
+    </div>
+  )
+}
+
+const MetricCard = ({ label, score }) => {
+  const tone = getScoreTone(score)
+
+  return (
+    <div className="rounded-[1.25rem] border border-white/10 bg-white/5 p-4">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-slate-400">{label}</span>
+        <span className={`font-semibold ${tone.text}`}>{score}%</span>
+      </div>
+      <div className="mt-3 h-2 rounded-full bg-slate-800">
+        <div className={`h-2 rounded-full bg-gradient-to-r ${tone.gradient}`} style={{ width: `${score}%` }} />
+      </div>
+    </div>
+  )
+}
+
 const ResumeAnalyzerPage = () => {
   const fileInputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isAnalyzed, setIsAnalyzed] = useState(false)
+  const [analysis, setAnalysis] = useState(null)
 
   const handleFileSelection = (file) => {
     if (file && file.type === 'application/pdf') {
       setSelectedFile(file)
       setIsAnalyzed(false)
+      setAnalysis(null)
     }
   }
 
@@ -59,6 +145,33 @@ const ResumeAnalyzerPage = () => {
     setIsDragging(false)
     const file = event.dataTransfer.files?.[0]
     handleFileSelection(file)
+  }
+
+  const handleAnalyze = () => {
+    if (!selectedFile) return
+
+    setAnalysis({
+      resumeScore: 86,
+      atsScore: 92,
+      keywordMatch: 89,
+      missingSkills: ['Motion Design', 'Go-to-Market Analytics', 'B2B SaaS Metrics'],
+      strengths: [
+        'Strong ownership and cross-functional collaboration',
+        'Clear impact storytelling with measurable outcomes',
+        'Solid leadership presence in recent roles',
+      ],
+      weaknesses: [
+        'Leadership examples need more quantification',
+        'Some ATS keywords for product analytics are missing',
+        'The opening summary could be more tailored to the role',
+      ],
+      suggestions: [
+        'Add a concise metrics section to highlight results more clearly.',
+        'Mention your AI workflow experience in the summary for better ATS match.',
+        'Tighten the top section so the strongest signal appears earlier.',
+      ],
+    })
+    setIsAnalyzed(true)
   }
 
   return (
@@ -143,7 +256,7 @@ const ResumeAnalyzerPage = () => {
 
               <button
                 type="button"
-                onClick={() => setIsAnalyzed(true)}
+                onClick={handleAnalyze}
                 disabled={!selectedFile}
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-3.5 font-semibold text-white shadow-[0_14px_50px_rgba(99,102,241,0.28)] transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -152,76 +265,89 @@ const ResumeAnalyzerPage = () => {
               </button>
             </div>
 
-            {isAnalyzed && (
+            {isAnalyzed && analysis && (
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 shadow-[0_20px_80px_rgba(2,6,23,0.3)] backdrop-blur-xl sm:p-8">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                   <div>
                     <p className="text-sm font-medium uppercase tracking-[0.25em] text-indigo-200">AI analysis preview</p>
-                    <h2 className="mt-2 text-2xl font-semibold text-white">Resume performance overview</h2>
+                    <h2 className="mt-2 text-2xl font-semibold text-white">ATS resume intelligence</h2>
                   </div>
-                  <div className="rounded-full bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-300">
-                    Overall Rating 4.8/5
+                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-300">
+                    <FiShield className="h-4 w-4" />
+                    Strong match for modern hiring pipelines
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-[1.25rem] border border-white/10 bg-white/5 p-4">
-                    <p className="text-sm text-slate-400">ATS Score</p>
-                    <p className="mt-2 text-3xl font-semibold text-white">92%</p>
+                <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+                  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+                    <div className="flex items-center gap-2 text-cyan-200">
+                      <FiTarget className="h-4 w-4" />
+                      <h3 className="font-semibold text-white">Resume Score</h3>
+                    </div>
+                    <div className="mt-5 flex flex-col items-center justify-center">
+                      <ScoreRing score={analysis.resumeScore} label="Resume Score" detail="Role fit + clarity" />
+                    </div>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <MetricCard label="ATS Score" score={analysis.atsScore} />
+                      <MetricCard label="Keyword Match" score={analysis.keywordMatch} />
+                    </div>
                   </div>
-                  <div className="rounded-[1.25rem] border border-white/10 bg-white/5 p-4">
-                    <p className="text-sm text-slate-400">Overall Rating</p>
-                    <p className="mt-2 text-3xl font-semibold text-white">Excellent</p>
+
+                  <div className="space-y-4">
+                    <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+                      <div className="flex items-center gap-2 text-amber-200">
+                        <FiAlertTriangle className="h-4 w-4" />
+                        <h3 className="font-semibold text-white">Missing Skills</h3>
+                      </div>
+                      <ul className="mt-4 space-y-2 text-sm text-slate-400">
+                        {analysis.missingSkills.map((skill) => (
+                          <li key={skill} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+                      <div className="flex items-center gap-2 text-emerald-200">
+                        <FiZap className="h-4 w-4" />
+                        <h3 className="font-semibold text-white">Strengths</h3>
+                      </div>
+                      <ul className="mt-4 space-y-2 text-sm leading-7 text-slate-400">
+                        {analysis.strengths.map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <FiCheckCircle className="mt-1 h-4 w-4 shrink-0 text-emerald-300" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
-                    <div className="flex items-center gap-2 text-indigo-200">
-                      <FiZap className="h-4 w-4" />
-                      <h3 className="font-semibold text-white">Skills Found</h3>
+                  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+                    <div className="flex items-center gap-2 text-rose-200">
+                      <FiBarChart2 className="h-4 w-4" />
+                      <h3 className="font-semibold text-white">Weaknesses</h3>
                     </div>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {skillsFound.map((skill) => (
-                        <span key={skill} className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-200">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
-                    <div className="flex items-center gap-2 text-amber-200">
-                      <FiCpu className="h-4 w-4" />
-                      <h3 className="font-semibold text-white">Missing Skills</h3>
-                    </div>
-                    <ul className="mt-4 space-y-2 text-sm text-slate-400">
-                      {missingSkills.map((skill) => (
-                        <li key={skill} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-                          {skill}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
-                    <h3 className="font-semibold text-white">Resume Strengths</h3>
                     <ul className="mt-4 space-y-2 text-sm leading-7 text-slate-400">
-                      {strengths.map((item) => (
+                      {analysis.weaknesses.map((item) => (
                         <li key={item} className="flex gap-2">
-                          <FiCheckCircle className="mt-1 h-4 w-4 shrink-0 text-emerald-300" />
+                          <FiAlertTriangle className="mt-1 h-4 w-4 shrink-0 text-rose-300" />
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
-                    <h3 className="font-semibold text-white">Suggestions</h3>
+                  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+                    <div className="flex items-center gap-2 text-indigo-200">
+                      <FiTrendingUp className="h-4 w-4" />
+                      <h3 className="font-semibold text-white">Improvement Suggestions</h3>
+                    </div>
                     <ul className="mt-4 space-y-2 text-sm leading-7 text-slate-400">
-                      {suggestions.map((item) => (
+                      {analysis.suggestions.map((item) => (
                         <li key={item} className="flex gap-2">
                           <FiArrowRight className="mt-1 h-4 w-4 shrink-0 text-indigo-200" />
                           <span>{item}</span>
